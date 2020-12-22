@@ -1,0 +1,23 @@
+{
+  "name": "go-gitbook",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "build": "gitbook build ./content ./docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ithaiq/go-gitbook.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ithaiq/go-gitbook/issues"
+  },
+  "homepage": "https://github.com/ithaiq/go-gitbook#readme"
+}
