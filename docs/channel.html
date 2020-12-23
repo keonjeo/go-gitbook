@@ -1,0 +1,398 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>channel通道实战 · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    
+    <link rel="prev" href="reflect.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" >
+            
+                <span>
+            
+                    
+                    Golang基础
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="type.html">
+            
+                <a href="type.html">
+            
+                    
+                    type实战
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="reflect.html">
+            
+                <a href="reflect.html">
+            
+                    
+                    reflect反射实战
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.2.3" data-path="channel.html">
+            
+                <a href="channel.html">
+            
+                    
+                    channel通道实战
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="." >channel通道实战</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="channel&#x901A;&#x9053;&#x5B9E;&#x6218;">channel&#x901A;&#x9053;&#x5B9E;&#x6218;</h1>
+<ul>
+<li>channel&#x642D;&#x914D;&#x7BA1;&#x9053;pipeline&#x63D0;&#x9AD8;&#x5E76;&#x53D1;</li>
+</ul>
+<pre><code class="lang-go"><span class="hljs-keyword">type</span> Cmd <span class="hljs-keyword">func</span>(list []<span class="hljs-keyword">int</span>) <span class="hljs-keyword">chan</span> <span class="hljs-keyword">int</span>
+<span class="hljs-keyword">type</span> PipeCmd <span class="hljs-keyword">func</span>(in <span class="hljs-keyword">chan</span> <span class="hljs-keyword">int</span>) <span class="hljs-keyword">chan</span> <span class="hljs-keyword">int</span> <span class="hljs-comment">//&#x652F;&#x6301;&#x7BA1;&#x9053;&#x7684;&#x51FD;&#x6570;</span>
+
+<span class="hljs-comment">//&#x6C42;&#x5076;&#x6570;</span>
+<span class="hljs-keyword">func</span> Event(list []<span class="hljs-keyword">int</span>) <span class="hljs-keyword">chan</span> <span class="hljs-keyword">int</span> {
+    c := <span class="hljs-built_in">make</span>(<span class="hljs-keyword">chan</span> <span class="hljs-keyword">int</span>)
+    <span class="hljs-keyword">go</span> <span class="hljs-keyword">func</span>() {
+        <span class="hljs-keyword">defer</span> <span class="hljs-built_in">close</span>(c)
+        <span class="hljs-keyword">for</span> _, num := <span class="hljs-keyword">range</span> list {
+            <span class="hljs-keyword">if</span> num%<span class="hljs-number">2</span> == <span class="hljs-number">0</span> {
+                c &lt;- num
+            }
+        }
+    }()
+    <span class="hljs-keyword">return</span> c
+}
+
+<span class="hljs-comment">//&#x4E58;&#x4EE5;2</span>
+<span class="hljs-keyword">func</span> M2(in <span class="hljs-keyword">chan</span> <span class="hljs-keyword">int</span>) <span class="hljs-keyword">chan</span> <span class="hljs-keyword">int</span> {
+    out := <span class="hljs-built_in">make</span>(<span class="hljs-keyword">chan</span> <span class="hljs-keyword">int</span>)
+    <span class="hljs-keyword">go</span> <span class="hljs-keyword">func</span>() {
+        <span class="hljs-keyword">defer</span> <span class="hljs-built_in">close</span>(out)
+        <span class="hljs-keyword">for</span> num := <span class="hljs-keyword">range</span> in {
+            out &lt;- num * <span class="hljs-number">2</span>
+        }
+    }()
+    <span class="hljs-keyword">return</span> out
+}
+
+<span class="hljs-comment">//&#x4E58;&#x4EE5;10</span>
+<span class="hljs-keyword">func</span> M10(in <span class="hljs-keyword">chan</span> <span class="hljs-keyword">int</span>) <span class="hljs-keyword">chan</span> <span class="hljs-keyword">int</span> {
+    out := <span class="hljs-built_in">make</span>(<span class="hljs-keyword">chan</span> <span class="hljs-keyword">int</span>)
+    <span class="hljs-keyword">go</span> <span class="hljs-keyword">func</span>() {
+        <span class="hljs-keyword">defer</span> <span class="hljs-built_in">close</span>(out)
+        <span class="hljs-keyword">for</span> num := <span class="hljs-keyword">range</span> in {
+            out &lt;- num * <span class="hljs-number">10</span>
+        }
+    }()
+    <span class="hljs-keyword">return</span> out
+}
+
+<span class="hljs-comment">//&#x7BA1;&#x9053;</span>
+<span class="hljs-keyword">func</span> Pipe(args []<span class="hljs-keyword">int</span>, c1 Cmd, cs ...PipeCmd) <span class="hljs-keyword">chan</span> <span class="hljs-keyword">int</span> {
+    ret := c1(args)
+    <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(cs) == <span class="hljs-number">0</span> {
+        <span class="hljs-keyword">return</span> ret
+    }
+    retlist := <span class="hljs-built_in">make</span>([]<span class="hljs-keyword">chan</span> <span class="hljs-keyword">int</span>, <span class="hljs-number">0</span>)
+    <span class="hljs-keyword">for</span> index, c := <span class="hljs-keyword">range</span> cs {
+        <span class="hljs-keyword">if</span> index == <span class="hljs-number">0</span> {
+            retlist = <span class="hljs-built_in">append</span>(retlist, c(ret))
+        } <span class="hljs-keyword">else</span> {
+            getChan := retlist[<span class="hljs-built_in">len</span>(retlist)<span class="hljs-number">-1</span>]
+            retlist = <span class="hljs-built_in">append</span>(retlist, c(getChan))
+        }
+    }
+    <span class="hljs-keyword">return</span> retlist[<span class="hljs-built_in">len</span>(retlist)<span class="hljs-number">-1</span>]
+}
+
+<span class="hljs-keyword">func</span> Test(nums []<span class="hljs-keyword">int</span>) {
+    ret := Pipe(nums, Event, M2, M10)
+    <span class="hljs-keyword">for</span> r := <span class="hljs-keyword">range</span> ret {
+        fmt.Printf(<span class="hljs-string">&quot;%d &quot;</span>, r)
+    }
+}
+
+<span class="hljs-keyword">func</span> main() {
+    nums := []<span class="hljs-keyword">int</span>{<span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">6</span>, <span class="hljs-number">12</span>, <span class="hljs-number">22</span>, <span class="hljs-number">16</span>, <span class="hljs-number">4</span>, <span class="hljs-number">9</span>, <span class="hljs-number">23</span>, <span class="hljs-number">64</span>, <span class="hljs-number">62</span>}
+    start := time.Now().Unix()
+    Test(nums)
+    end := time.Now().Unix()
+    fmt.Printf(<span class="hljs-string">&quot;&#x6D4B;&#x8BD5;--&#x7528;&#x65F6;:%d&#x79D2;\r\n&quot;</span>, end-start)
+}
+</code></pre>
+<ul>
+<li>channel&#x4F7F;&#x7528;&#x591A;&#x8DEF;&#x590D;&#x7528;&#x5229;&#x7528;&#x591A;&#x6838;&#x63D0;&#x9AD8;&#x5E76;&#x53D1;&#xFF0C;<a href="https://github.com/ithaiq/go-gitbook/tree/master/code/channel/base_pipe.go" target="_blank">&#x901A;&#x7528;&#x4EE3;&#x7801;</a>&#xFF0C;<a href="https://github.com/ithaiq/go-gitbook/tree/master/code/channel/base_pipe_test.go" target="_blank">&#x6D4B;&#x8BD5;&#x7528;&#x4F8B;</a></li>
+</ul>
+<pre><code class="lang-go"><span class="hljs-comment">//&#x591A;&#x8DEF;&#x590D;&#x7528;</span>
+<span class="hljs-keyword">func</span> Pipe2(args []<span class="hljs-keyword">int</span>, c1 Cmd, cs ...PipeCmd) <span class="hljs-keyword">chan</span> <span class="hljs-keyword">int</span> {
+    ret := c1(args)
+    out := <span class="hljs-built_in">make</span>(<span class="hljs-keyword">chan</span> <span class="hljs-keyword">int</span>)
+    wg := sync.WaitGroup{}
+    <span class="hljs-keyword">for</span> _, c := <span class="hljs-keyword">range</span> cs {
+        getChan := c(ret)
+        wg.Add(<span class="hljs-number">1</span>)
+        <span class="hljs-keyword">go</span> <span class="hljs-keyword">func</span>(input <span class="hljs-keyword">chan</span> <span class="hljs-keyword">int</span>) {
+            <span class="hljs-keyword">defer</span> wg.Done()
+            <span class="hljs-keyword">for</span> v := <span class="hljs-keyword">range</span> input {
+                out &lt;- v
+            }
+        }(getChan)
+    }
+    <span class="hljs-keyword">go</span> <span class="hljs-keyword">func</span>() {
+        <span class="hljs-keyword">defer</span> <span class="hljs-built_in">close</span>(out)
+        wg.Wait()
+    }()
+    <span class="hljs-keyword">return</span> out
+}
+<span class="hljs-keyword">func</span> Test(nums []<span class="hljs-keyword">int</span>) {
+    ret := Pipe2(nums, Event, M2, M2)<span class="hljs-comment">//&#x76F8;&#x5F53;&#x4E8E;2&#x4E2A;&#x6D88;&#x8D39;&#x8005;</span>
+    <span class="hljs-keyword">for</span> r := <span class="hljs-keyword">range</span> ret {
+        fmt.Printf(<span class="hljs-string">&quot;%d &quot;</span>, r)
+    }
+}
+
+<span class="hljs-keyword">func</span> main() {
+    nums := []<span class="hljs-keyword">int</span>{<span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">6</span>, <span class="hljs-number">12</span>, <span class="hljs-number">22</span>, <span class="hljs-number">16</span>, <span class="hljs-number">4</span>, <span class="hljs-number">9</span>, <span class="hljs-number">23</span>, <span class="hljs-number">64</span>, <span class="hljs-number">62</span>}
+    start := time.Now().Unix()
+    Test(nums)
+    end := time.Now().Unix()
+    fmt.Printf(<span class="hljs-string">&quot;&#x6D4B;&#x8BD5;--&#x7528;&#x65F6;:%d&#x79D2;\r\n&quot;</span>, end-start)
+}
+</code></pre>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="reflect.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page: reflect反射实战">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"channel通道实战","level":"1.2.3","depth":2,"previous":{"title":"reflect反射实战","level":"1.2.2","depth":2,"path":"reflect.md","ref":"reflect.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"channel.md","mtime":"2020-12-23T07:36:41.038Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-12-23T07:36:46.214Z"},"basePath":".","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="gitbook/gitbook.js"></script>
+    <script src="gitbook/theme.js"></script>
+    
+        
+        <script src="gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
